@@ -150,12 +150,16 @@ export default function OCRPage() {
       } else {
         throw new Error('ไม่พบข้อมูลผลลัพธ์การประมวลผลกลับมา');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      setResults(files.map(f => ({
+      const message = error instanceof Error
+        ? error.message
+        : 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้';
+
+      setResults(files.map((f) => ({
         filename: f.file.name,
         status: 'error',
-        message: error.message || 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้'
+        message,
       })));
     } finally {
       setIsLoading(false);
